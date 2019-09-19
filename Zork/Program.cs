@@ -18,7 +18,7 @@ namespace Zork
         {
             {
                 string[] rooms = { "Forest", "West of House", "Behind house", "Clearing", "Canyon View" };
-
+                int index = 0; //You forgot to make this variable before you use it :)
                 while (index<rooms.Length)
                 {
                     Console.WriteLine(rooms[0]);
@@ -26,6 +26,7 @@ namespace Zork
                     Console.WriteLine(rooms[2]);
                     Console.WriteLine(rooms[3]);
                     Console.WriteLine(rooms[4]);
+                    index++: //I presume you meant to add this as well, as to avoid an infinite loop :)
                 }
             }
             Console.WriteLine("Welcome to Zork!");
