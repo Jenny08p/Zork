@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic; //hashset uses
 
 namespace Zork
 {
@@ -14,22 +15,8 @@ namespace Zork
     }
     class Program
     {
-        private int a = 10;
         static void Main(string[] args)
-        {
-            {
-                string[] rooms = { "Forest", "West of House", "Behind house", "Clearing", "Canyon View" };
-                int index = 0; //You forgot to make this variable before you use it :)
-                while (index<rooms.Length)
-                {
-                    Console.WriteLine(rooms[0]);
-                    Console.WriteLine(rooms[1]);
-                    Console.WriteLine(rooms[2]);
-                    Console.WriteLine(rooms[3]);
-                    Console.WriteLine(rooms[4]);
-                    index++: //I presume you meant to add this as well, as to avoid an infinite loop :)
-                }
-            }
+        { 
             Console.WriteLine("Welcome to Zork!");
 
             Commands command = Commands.UNKNOWN;
@@ -91,6 +78,11 @@ namespace Zork
 
         private static bool Move(Commands command)
         {
+            if (Directions.Contains(command) == false)
+            {
+                throw new ArgumentException();
+            }
+
             bool movedSuccessfully;
 
             switch (command)
@@ -105,25 +97,28 @@ namespace Zork
                     movedSuccessfully = true;             
                     break;
 
-                case Commands.WEST:
-                    if (PlayerPosition > 0)
-                    {
-                        PlayerPosition--;
-                        movedSuccessfully = true;
-                    }
-                    else
-                    {
-                        movedSuccessfully = false;
-                    }
+                case Commands.WEST when PlayerPosition > 0:
+                    PlayerPosition--;
+                    movedSuccessfully = true;
                     break;
 
                 default:
-                    throw new ArgumentException();
+                    movedSuccessfully = false;
+                    break;
             }
 
 
             return movedSuccessfully;
         }
+
+        private static readonly HashSet<Commands> Directions = new HashSet<Commands>()
+        {
+           Commands.NORTH,
+           Commands.EAST,
+           Commands.SOUTH,
+           Commands.WEST
+         };
+
         private static readonly string[] Rooms = { "Forest", "West of House", "Behind house", "Clearing", "Canyon View" };
         private static int PlayerPosition = 1; 
     }
