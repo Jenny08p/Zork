@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic; //hashset uses
 
+
 namespace Zork
 {
     enum Commands
@@ -15,6 +16,14 @@ namespace Zork
     }
     class Program
     {
+        private static string CurrentRoom
+        {
+            get
+            {
+                return Rooms[Location.Row, Location.Column];
+            }
+        }
+
         static void Main(string[] args)
         { 
             Console.WriteLine("Welcome to Zork!");
@@ -22,46 +31,37 @@ namespace Zork
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.WriteLine(Rooms[PlayerPosition]);
+                Console.WriteLine(CurrentRoom);
                 Console.Write(">");
                 command = ToCommand(Console.ReadLine().Trim());
 
-                string outputString;
                 switch (command)
                 {
                     case Commands.QUIT:
-                        outputString = "Thank you for playing!";
+                        Console.WriteLine("Thank you for playing!");
                         break;
 
                     case Commands.LOOK:
-                        outputString = "This is an open field west of a white house, with a boarded front door.A rubber mat saying 'Welcome to Zork!' lies by the door.";
+                        Console.WriteLine("This is an open field west of a white house, with a boarded front door.A rubber mat saying 'Welcome to Zork!' lies by the door.");
                         break;
 
                     case Commands.NORTH:
                     case Commands.SOUTH:
                     case Commands.EAST:
                     case Commands.WEST:
-                        bool movedSucessfully = Move(command);
-                        if (movedSucessfully)
+                        if (Move(command) == false)
                         {
-                            outputString = $"You moved {command}.";
-
+                            Console.WriteLine("The wat us shut!");
                         }
-                        else
-                        {
-                            outputString = $"The way is shut!";
-                        }
+                        
                         break;
 
                     default:
-                        outputString = "Unknown Command";
+                        Console.WriteLine("Unknown command.");
                         break;
 
                 }
-
-                Console.WriteLine(outputString);
             }
-
         }
 
         private static Commands ToCommand(string commandString)
@@ -78,38 +78,38 @@ namespace Zork
 
         private static bool Move(Commands command)
         {
-            if (Directions.Contains(command) == false)
-            {
-                throw new ArgumentException();
-            }
+            Assert.IsTrue(IsDirection(command), "Invalid direction");
 
-            bool movedSuccessfully;
-
+            bool isValidMove = true; 
             switch (command)
             {
-                case Commands.NORTH:
-                case Commands.SOUTH:
-                    movedSuccessfully = false;
+                case Commands.NORTH when Location.Row > 0:
+                    Location.Row--;
                     break;
 
-                case Commands.EAST when PlayerPosition < Rooms.Length - 1:
-                    PlayerPosition++;
-                    movedSuccessfully = true;             
+                case Commands.SOUTH when Location.Row > 0:
+                    Location.Row++;
                     break;
 
-                case Commands.WEST when PlayerPosition > 0:
-                    PlayerPosition--;
-                    movedSuccessfully = true;
+                case Commands.EAST when Location.Row > 0:
+                    Location.Column++;
+                    break;
+
+                case Commands.WEST when Location.Row > 0:
+                    Location.Column--;
                     break;
 
                 default:
-                    movedSuccessfully = false;
+                    isValidMove = false;
                     break;
             }
 
-
-            return movedSuccessfully;
+            return isValidMove;
         }
+
+        private static int LocationColumn;
+
+        private static bool IsDirection(Commands command) => Directions.Contains(command);
 
         private static readonly HashSet<Commands> Directions = new HashSet<Commands>()
         {
@@ -119,7 +119,15 @@ namespace Zork
            Commands.WEST
          };
 
-        private static readonly string[] Rooms = { "Forest", "West of House", "Behind house", "Clearing", "Canyon View" };
-        private static int PlayerPosition = 1; 
+        private static readonly string[,] Rooms = 
+        {
+            { "Rocky Trail", "South of House", "Canyon View" },
+                              
+            { "Forest", "West of House", "Behind house" }, 
+            
+            { "Dense Woods", "North of House", "Clearing" }
+        };
+
+        private static (int Row, int Column) Location = (1, 1);
     }
 }
