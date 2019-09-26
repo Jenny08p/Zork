@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; //hashset uses
+using System.Diagnostics;
 
 
 namespace Zork
@@ -32,7 +33,7 @@ namespace Zork
             while (command != Commands.QUIT)
             {
                 Console.WriteLine(CurrentRoom);
-                Console.Write(">");
+                Console.Write("> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
                 switch (command)
@@ -76,9 +77,9 @@ namespace Zork
             }
         }
 
-        private static bool Move(Commands command)
+         private static bool Move(Commands command)
         {
-            Assert.IsTrue(IsDirection(command), "Invalid direction");
+            Assert.IsTrue(IsDirection(command), "Invalid direction.");
 
             bool isValidMove = true; 
             switch (command)
@@ -130,4 +131,17 @@ namespace Zork
 
         private static (int Row, int Column) Location = (1, 1);
     }
+    //private bool IndexOf(string[,] values, string valureToFind)
+    // {
+    //  bool found = false;
+    //   for (int row = 0; LocationColumn < values.GetLength(1); LocationColumn++)
+
+    // {
+    //   if (valueToFind == values[row, column])
+    //  {
+    //    found = true;
+    //     break;
+    // }
+    //  }
+    //  }
 }
