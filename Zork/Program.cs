@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic; //hashset uses
-using System.Diagnostics;
 
 
 namespace Zork
@@ -17,7 +16,7 @@ namespace Zork
     }
     class Program
     {
-        private static string CurrentRoom
+        private static Room CurrentRoom
         {
             get
             {
@@ -26,13 +25,19 @@ namespace Zork
         }
 
         static void Main(string[] args)
-        { 
+         {
+            InitializedRoomDescription();
+
             Console.WriteLine("Welcome to Zork!");
+
+            Location = IndexOf(Rooms, "West of House");
+            Assert.IsTrue(Location != (-1, -1));
+
 
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.WriteLine(CurrentRoom);
+                Console.WriteLine(CurrentRoom.ToString());
                 Console.Write("> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
@@ -43,7 +48,7 @@ namespace Zork
                         break;
 
                     case Commands.LOOK:
-                        Console.WriteLine("This is an open field west of a white house, with a boarded front door.A rubber mat saying 'Welcome to Zork!' lies by the door.");
+                        Console.WriteLine(CurrentRoom.Description);
                         break;
 
                     case Commands.NORTH:
@@ -52,12 +57,12 @@ namespace Zork
                     case Commands.WEST:
                         if (Move(command) == false)
                         {
-                            Console.WriteLine("The wat us shut!");
+                            Console.WriteLine("The way us shut!");
                         }
-                        
+
                         break;
 
-                    default:
+                        default:
                         Console.WriteLine("Unknown command.");
                         break;
 
@@ -77,26 +82,26 @@ namespace Zork
             }
         }
 
-         private static bool Move(Commands command)
+        private static bool Move(Commands command)
         {
-            Assert.IsTrue(IsDirection(command), "Invalid direction.");
+            Assert.IsTrue(Directions.Contains(command), "Invalid direction.");
 
-            bool isValidMove = true; 
+            bool isValidMove = true;
             switch (command)
             {
                 case Commands.NORTH when Location.Row > 0:
                     Location.Row--;
                     break;
 
-                case Commands.SOUTH when Location.Row > 0:
+                case Commands.SOUTH when Location.Row < Rooms.GetLength(0) - 1:
                     Location.Row++;
                     break;
 
-                case Commands.EAST when Location.Row > 0:
+                case Commands.EAST when Location.Column < Rooms.GetLength(1) - 1:
                     Location.Column++;
                     break;
 
-                case Commands.WEST when Location.Row > 0:
+                case Commands.WEST when Location.Column > 0:
                     Location.Column--;
                     break;
 
@@ -108,8 +113,6 @@ namespace Zork
             return isValidMove;
         }
 
-        private static int LocationColumn;
-
         private static bool IsDirection(Commands command) => Directions.Contains(command);
 
         private static readonly HashSet<Commands> Directions = new HashSet<Commands>()
@@ -120,28 +123,56 @@ namespace Zork
            Commands.WEST
          };
 
-        private static readonly string[,] Rooms = 
+        private static void InitializedRoomDescription()
         {
-            { "Rocky Trail", "South of House", "Canyon View" },
-                              
-            { "Forest", "West of House", "Behind house" }, 
-            
-            { "Dense Woods", "North of House", "Clearing" }
+            Rooms[0, 0].Description = "You are on a rock-strewn trail."; //Rocky Trail
+            Rooms[0, 1].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred."; //South of House
+            Rooms[0, 2].Description =  "blah" ;       //
+
+            Rooms[1, 0].Description =  "blah" ;       // chapter 8
+            Rooms[1, 1].Description =  "blah" ;       //
+            Rooms[1, 2].Description =  "blah" ;       //
+
+            Rooms[2, 0].Description =  "blah" ;       //
+            Rooms[2, 1].Description =  "blah" ;       //
+            Rooms[2, 1].Description =  "blah" ;       //
+         
+        }
+
+        private static readonly Room[,] Rooms =
+        {
+            {new Room("Rocky Trail"),  new Room("South of House"),   new Room("Canyon View") },
+            {new Room("Forest"),       new Room("West of House"),    new Room("Behind house") },
+            {new Room("Dense Woods"),  new Room ("North of House"),  new Room("Clearing") }
         };
 
-        private static (int Row, int Column) Location = (1, 1);
-    }
-    //private bool IndexOf(string[,] values, string valureToFind)
-    // {
-    //  bool found = false;
-    //   for (int row = 0; LocationColumn < values.GetLength(1); LocationColumn++)
+        private static (int Row, int Column) Location;
 
-    // {
-    //   if (valueToFind == values[row, column])
-    //  {
-    //    found = true;
-    //     break;
-    // }
-    //  }
-    //  }
+        private static (int Row, int Colum) IndexOf(Room[,] values, string valueToFind)
+        {
+            for (int row = 0; row < values.GetLength(0); row++)
+            {
+                for (int column = 0; column < values.GetLength(1); column++)
+                {
+                   if (values[row, column].Name == valueToFind)
+                    {
+                        return (row, column);
+                    }
+                }
+            }
+          return (-1, -1);
+        }
+    }
 }
+
+/*   Room westOfHouse = new Room("West of House");
+Console.Write(westOfHouse.Name);
+
+            westOfHouse.Description = "";
+            Console.WriteLine(westOfHouse.Description);
+
+            Console.WriteLine("\n\n");
+*/
+
+
+
