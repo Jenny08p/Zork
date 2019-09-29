@@ -25,8 +25,8 @@ namespace Zork
         }
 
         static void Main(string[] args)
-        { 
-            var roomMap = InitializeRoomDescription(); 
+        {
+            _ = InitializeRoomDescription();
 
             Console.WriteLine("Welcome to Zork!");
 
@@ -37,7 +37,7 @@ namespace Zork
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.WriteLine(CurrentRoom.ToString());
+                Console.WriteLine(CurrentRoom.ToString() + Environment.NewLine + CurrentRoom.Description); 
                 Console.Write("> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
@@ -147,7 +147,7 @@ namespace Zork
 
         
         
-        /* Rooms[0, 0].Description = "You are on a rock-strewn trail."; // Rocky Trail
+        /*Rooms[0, 0].Description = "You are on a rock-strewn trail."; // Rocky Trail
             Rooms[0, 1].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred."; // South of House
             Rooms[0, 2].Description =  "You are at the top of the Great Canyon on its south wall." ;       // Canyon View
 
