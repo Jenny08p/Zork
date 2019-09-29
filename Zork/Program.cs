@@ -26,7 +26,7 @@ namespace Zork
 
         static void Main(string[] args)
         {
-            _ = InitializeRoomDescription();
+            InitializeRoomDescription();
 
             Console.WriteLine("Welcome to Zork!");
 
@@ -123,7 +123,7 @@ namespace Zork
            Commands.WEST
          };
 
-        private static Dictionary<string, Room> InitializeRoomDescription()
+        private static void InitializeRoomDescription()
         {
             var roomMap = new Dictionary<string, Room>();
             foreach (Room room in Rooms)
@@ -140,8 +140,6 @@ namespace Zork
             roomMap["Dense Woods"].Description = "This is a dimly lit forest, with large trees all around. To the east, there appears to be sunlight.";
             roomMap["North of House"].Description = "You are facing the north side of a white house. There is no door here and all the windows are barred.";
             roomMap["Clearing"].Description = "You are in a clearing with a forest surrounding you on the west and south.";
-
-            return roomMap; 
 
         }
 
