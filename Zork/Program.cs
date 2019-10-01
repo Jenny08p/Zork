@@ -33,13 +33,22 @@ namespace Zork
             Location = IndexOf(Rooms, "West of House");
             Assert.IsTrue(Location != (-1, -1));
 
+            Room previousRoom = null;
+
 
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.WriteLine(CurrentRoom.ToString() + Environment.NewLine + CurrentRoom.Description); 
+                Console.WriteLine(CurrentRoom.ToString());
+                if (previousRoom != CurrentRoom)
+                {
+                    Console.WriteLine(CurrentRoom.Description);
+                    previousRoom = CurrentRoom;
+                }
+
                 Console.Write("> ");
                 command = ToCommand(Console.ReadLine().Trim());
+
 
                 switch (command)
                 {
@@ -50,7 +59,6 @@ namespace Zork
                     case Commands.LOOK:
                         Console.WriteLine(CurrentRoom.Description);
                         break;
-
                     case Commands.NORTH:
                     case Commands.SOUTH:
                     case Commands.EAST:
@@ -62,7 +70,7 @@ namespace Zork
 
                         break;
 
-                        default:
+                    default:
                         Console.WriteLine("Unknown command.");
                         break;
 
@@ -89,11 +97,11 @@ namespace Zork
             bool isValidMove = true;
             switch (command)
             {
-                case Commands.NORTH when Location.Row > 0:
+                case Commands.SOUTH when Location.Row > 0:
                     Location.Row--;
                     break;
 
-                case Commands.SOUTH when Location.Row < Rooms.GetLength(0) - 1:
+                case Commands.NORTH when Location.Row < Rooms.GetLength(0) - 1:
                     Location.Row++;
                     break;
 
@@ -128,7 +136,7 @@ namespace Zork
             var roomMap = new Dictionary<string, Room>();
             foreach (Room room in Rooms)
             {
-                roomMap[room.Name] = room;
+                roomMap.Add(room.Name, room);
             }
 
             roomMap["Rocky Trail"].Description = "You are on a rock-strewn trail.";
@@ -143,28 +151,12 @@ namespace Zork
 
         }
 
-        
-        
-        /*Rooms[0, 0].Description = "You are on a rock-strewn trail."; // Rocky Trail
-            Rooms[0, 1].Description = "You are facing the south side of a white house. There is no door here, and all the windows are barred."; // South of House
-            Rooms[0, 2].Description =  "You are at the top of the Great Canyon on its south wall." ;       // Canyon View
-
-            Rooms[1, 0].Description =  "This is a forest, with trees in all directions around you." ;       // Forest
-            Rooms[1, 1].Description =  "This is an open field west of a white house, with a borded front door" ;       // West of house 
-            Rooms[1, 2].Description =  "You are behing the white house. In one corner of the house, there is a small window which is slightly ajar." ;       // Behind House
-
-            Rooms[2, 0].Description =  "This is a dimly lit forest, with large trees all around. To the east, there appears to be sunlight." ;       // Dense Woods
-            Rooms[2, 1].Description =  "You are facing the north side of a white house. There is no door here and all the windows are barred." ;       // North of House
-            Rooms[2, 1].Description =  "You are in a clearing with a forest surrounding you on the west and south." ;       // Clearing 
-         
-        } */ 
-
         private static readonly Room[,] Rooms =
         {
             {new Room("Rocky Trail"),  new Room("South of House"),   new Room("Canyon View") },
             {new Room("Forest"),       new Room("West of House"),    new Room("Behind house") },
             {new Room("Dense Woods"),  new Room ("North of House"),  new Room("Clearing") }
-        }; 
+        };
 
         private static (int Row, int Column) Location;
 
@@ -174,13 +166,13 @@ namespace Zork
             {
                 for (int column = 0; column < values.GetLength(1); column++)
                 {
-                   if (values[row, column].Name == valueToFind)
+                    if (values[row, column].Name == valueToFind)
                     {
                         return (row, column);
                     }
                 }
             }
-          return (-1, -1);
+            return (-1, -1);
         }
     }
 }
