@@ -196,14 +196,5 @@ namespace Zork
     }
 }
 
-/*   Room westOfHouse = new Room("West of House");
-Console.Write(westOfHouse.Name);
-
-            westOfHouse.Description = "";
-            Console.WriteLine(westOfHouse.Description);
-
-            Console.WriteLine("\n\n");
-*/
-
 
 
