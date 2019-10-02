@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic; //hashset uses
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json; 
 
 namespace Zork
@@ -32,8 +33,8 @@ namespace Zork
             Location = IndexOf(Rooms, "West of House");
             Assert.IsTrue(Location != (-1, -1));
 
-            string roomsFileName = args.Length > 0 ? args[0] : "Rooms.txt.";
-            InitializeRoomDescription(roomsFileName);
+            string roomsFileName = args.Length > 0 ? args[0] : "Rooms.json";
+            InitializeRooms(roomsFileName);
 
             Room previousRoom = null;
 
@@ -132,12 +133,15 @@ namespace Zork
            Commands.WEST
          };
 
-        private static void InitializeRoomDescription(string roomsFilename)
+        private static void InitializeRooms(string roomsFilename) =>
+            Rooms = JsonConvert.DeserializeObject<Room[,]>(File.ReadAllText(roomsFilename));
+        /*
         {
-            var roomMap = new Dictionary<string, Room>();
+            Rooms = JsonConvert.DeserializeObject<Room[]>(File.ReadAllText(roomsFilename));
+
             foreach (Room room in Rooms)
             {
-                roomMap.Add(room.Name, room);
+                RoomMap[room.Name].Description = room.Description;
             }
 
             string[] lines = File.ReadAllLines(roomsFilename);
@@ -154,11 +158,12 @@ namespace Zork
                 string name = fields[(int)Fields.Name];
                 string description = fields[(int)Fields.Description];
 
-                roomMap[name].Description = description; 
+                RoomMap[name].Description = description; 
             }
         }
+        */
 
-        private static readonly Room[,] Rooms =
+        private static Room[,] Rooms =
         {
             {new Room("Rocky Trail"),  new Room("South of House"),   new Room("Canyon View") },
             {new Room("Forest"),       new Room("West of House"),    new Room("Behind house") },
