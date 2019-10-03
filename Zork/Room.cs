@@ -8,33 +8,35 @@ namespace Zork
 {
     public class Room : IEquatable<Room>
     {
-      [JsonProperty(Order = 1)]
-      public string Name { get; private set; }
+        [JsonProperty(Order = 1)]
+        public string Name { get; private set; }
 
-       [JsonProperty(Order = 2)]
-       public string Description { get; private set; }
+        [JsonProperty(Order = 2)]
+        public string Description { get; private set; }
 
         [JsonProperty(PropertyName = "Neighbors", Order = 3)]
-        private Dictionary<Directions, string> NeighborNames { get; set; }
+        private Dictionary<Directions, string> NeighborsNames { get; set; }
 
         [JsonIgnore]
         public IReadOnlyDictionary<Directions, Room> Neighbors { get; private set; }
 
-        public static bool operator == (Room 1hs, Room rhs)
+        public static bool operator ==(Room lhs, Room rhs)
         {
-            if (ReferenceEquals(1hs, rhs))
+            if (ReferenceEquals(lhs, rhs))
             {
                 return true;
             }
-            if (1hs is null || rhs is null)
+
+            if (lhs is null || rhs is null)
             {
                 return false;
             }
-             return 1hs.Name == rhs.Name;
+
+            return lhs.Name == rhs.Name;
         }
 
-        public static bool operator !=(Room 1hs, Room rhs) => !(1hs == rhs);
-        
+        public static bool operator !=(Room lhs, Room rhs) => !(lhs == rhs);
+
         public override bool Equals(object obj) => obj is Room room ? this == room : false;
 
         public bool Equals(Room other) => this == other;
@@ -43,11 +45,9 @@ namespace Zork
 
         public override int GetHashCode() => Name.GetHashCode();
 
-        public void UpdateNeighbors(World world) => Neighbors = (from entry in NeighborNames
+        public void UpdateNeighbors(World world) => Neighbors = (from entry in NeighborsNames
                                                                  let room = world.RoomsByName.GetValueOrDefault(entry.Value)
                                                                  where room != null
-                                                                 select (Direction: entry.Key, Room: room))
-                                                                 .ToDictionary(pair => pair.Direction, pair => pair.Room);
- 
+                                                                 select (Direction: entry.Key, Room: room)).ToDictionary(pair => pair.Direction, pair => pair.Room);
     }
 }

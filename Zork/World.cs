@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-
 namespace Zork
 {
     public class World
@@ -27,5 +26,10 @@ namespace Zork
                 room.UpdateNeighbors(this);
             }
         }
+
+        [JsonProperty]
+        private string StartingLocation { get; set; }
+
+        private Dictionary<string, Room> mRoomsByName;
     }
 }
