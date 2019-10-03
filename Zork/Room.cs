@@ -1,20 +1,53 @@
-﻿namespace Zork
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+
+
+namespace Zork
 {
-    public class Room
+    public class Room : IEquatable<Room>
     {
-        public string Name { get; }
+      [JsonProperty(Order = 1)]
+      public string Name { get; private set; }
 
-        public string Description { get; set; }
+       [JsonProperty(Order = 2)]
+       public string Description { get; private set; }
 
-        public Room(string name, string description = "")
+        [JsonProperty(PropertyName = "Neighbors", Order = 3)]
+        private Dictionary<Directions, string> NeighborNames { get; set; }
+
+        [JsonIgnore]
+        public IReadOnlyDictionary<Directions, Room> Neighbors { get; private set; }
+
+        public static bool operator == (Room 1hs, Room rhs)
         {
-            Name = name;
-            Description = description;
+            if (ReferenceEquals(1hs, rhs))
+            {
+                return true;
+            }
+            if (1hs is null || rhs is null)
+            {
+                return false;
+            }
+             return 1hs.Name == rhs.Name;
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public static bool operator !=(Room 1hs, Room rhs) => !(1hs == rhs);
+        
+        public override bool Equals(object obj) => obj is Room room ? this == room : false;
+
+        public bool Equals(Room other) => this == other;
+
+        public override string ToString() => Name;
+
+        public override int GetHashCode() => Name.GetHashCode();
+
+        public void UpdateNeighbors(World world) => Neighbors = (from entry in NeighborNames
+                                                                 let room = world.RoomsByName.GetValueOrDefault(entry.Value)
+                                                                 where room != null
+                                                                 select (Direction: entry.Key, Room: room))
+                                                                 .ToDictionary(pair => pair.Direction, pair => pair.Room);
+ 
     }
 }
