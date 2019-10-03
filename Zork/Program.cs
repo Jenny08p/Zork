@@ -173,12 +173,7 @@ namespace Zork
         }
         */
 
-        private static Room[,] Rooms =
-        {
-            {new Room("Rocky Trail"),  new Room("South of House"),   new Room("Canyon View") },
-            {new Room("Forest"),       new Room("West of House"),    new Room("Behind house") },
-            {new Room("Dense Woods"),  new Room ("North of House"),  new Room("Clearing") }
-        };
+        private static Room[,] Rooms;
 
         private static (int Row, int Column) Location;
 
@@ -203,11 +198,11 @@ namespace Zork
             Description = 1,
         }
 
-        private enum CommandLineArguments
+       /* private enum CommandLineArguments
         {
             RoomsFilename = 0,
             UseLinq
-        }
+        } */
     }
 }
 
