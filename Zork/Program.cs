@@ -18,7 +18,7 @@ namespace Zork
     }
     class Program
     {
-        private static Room CurrentRoom
+        public static Room CurrentRoom
         {
             get
             {
@@ -28,7 +28,13 @@ namespace Zork
 
         static void Main(string[] args)
         {
+            const string defaultGameFilename = "Zork.json";
+            string gameFilename = (args.Length > 0 ? args[(int)CommandLineArguments.GameFilename] : defaultGameFilename);
+
+            Game game = Game.Load(GameFilename);
             Console.WriteLine("Welcome to Zork!");
+            game.Run();
+            Console.WriteLine("Thank you for Playing");
 
             Location = IndexOf(Rooms, "West of House");
             Assert.IsTrue(Location != (-1, -1));
@@ -79,7 +85,11 @@ namespace Zork
                 }
             }
         }
-
+            private enum CommandLineArguments
+        {
+            GameFilename = 0
+        }
+        
         private static Commands ToCommand(string commandString)
         {
             if (Enum.TryParse<Commands>(commandString, ignoreCase: true, out Commands result))
